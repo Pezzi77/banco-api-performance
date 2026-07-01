@@ -15,7 +15,6 @@ export const options = {
 };
 
 export default function () {
-    // Teste!
     const url = 'http://localhost:3000/login';
 
     postLogin.username = "junior.lima"
