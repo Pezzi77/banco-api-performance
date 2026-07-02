@@ -1,31 +1,38 @@
 import http from 'k6/http';
-import { check, sleep } from 'k6';
-import { obterToken } from '../helpers/autenticacao.js'; // 1. Garanta que a importação existe
+import { sleep, check } from 'k6';
+import { obterToken } from '../helpers/autenticacao.js'
+import { pegarBaseURL } from '../utils/variaveis.js'
 
-export default function () {
-    // 2. Aqui você gera o token dinamicamente antes de usar nas requisições
-    const token = obterToken(); 
 
-    const url = 'http://localhost:3000/transferencias';
 
+export const options = {
+    iterations: 1
+  };
+  
+  export default function() {
+    const token = obterToken()
+  
+    const url = pegarBaseURL() + '/transferencias';
+  
     const payload = JSON.stringify({
-        contaOrigem: 1,
-        contaDestino: 2,
-        valor: 11,
-        token: "" 
+      contaOrigem: 1,
+      contaDestino: 2,
+      valor: 11,
+      token: ""
     });
-
+  
     const params = {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token // 4. Aqui ele vai concatenar o token real perfeitamente
-        },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
     };
-
-    let res = http.post(url, payload, params);
-    
-    console.log(`Status retornado: ${res.status} - Resposta: ${res.body}`);
-    
-    check(res, { "status is 201": (res) => res.status === 201 });
+  
+    let res = http.post(url, payload, params)
+  
+    check(res, { 
+      "status is 201": (res) => res.status === 201 
+    });
+  
     sleep(1);
-}
+  }
